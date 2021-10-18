@@ -23,11 +23,23 @@
 </head>
 
 <body class="h-full min-h-screen bg-gray-200 flex flex-col" x-data="alpineInstance()">
-    <div class="h-full text-gray-800 dark:text-gray-200 p-4 lg:p-8 flex-1 flex flex-col items-center">
+    <div class="h-full text-gray-800 p-4 lg:p-8 flex-1 flex flex-col items-center">
         <div class="w-full flex justify-center pb-2 text-lg font-semibold">
             Pavia - CNFT Listings
         </div>
-        <div class="w-full flex justify-center text-gray-600 dark:text-gray-400 text-sm">
+        <div class="flex items-center">
+            <div class="pr-2">
+                Max price:
+            </div>
+            <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-36">
+            <button type="submit" @click="loadData()"
+                class="flex bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 ml-2"
+                :class="[ isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700' ]" :disabled="isLoading">
+                Search
+            </button>
+        </div>
+        
+        <div class="w-full flex justify-center text-gray-600  text-sm">
             <div class="pr-1">Getting page:</div>
             <div x-text="pageNum"></div>
         </div>
@@ -48,15 +60,16 @@
 <script>
     function alpineInstance() {
         return {
-            isLoading: true,
+            isLoading: false,
             isError: false,
             error: '',
             all_lands: [],
             pageNum: 0,
-            init(){
-                this.loadData();
-            },
+            maxPrice: 400,
             async loadData(){
+                this.pageNum = 0;
+                this.isLoading = true;
+                this.all_lands = [];
                 while(1){
                     const payload = {
                         search: "",
@@ -66,7 +79,7 @@
                         page: this.pageNum,
                         verified: true,
                         project: "pavia",
-          
+                        pricemax: this.maxPrice
                     };
 
                     await axios.post("https://api.cnft.io/market/listings", payload)
@@ -90,6 +103,7 @@
                     this.pageNum += 1;
 
                     if (lands.length == 0){
+                        this.isLoading = false;
                         this.plotData();
                         var element = document.getElementById("scatterplot");
                         element.classList.remove("hidden");
@@ -102,6 +116,8 @@
                         margin = 200,
                         width = svg.attr("width") - margin,
                         height = svg.attr("height") - margin
+                
+                svg.selectAll("g").remove();
 
                 var xScale = d3.scaleLinear().domain([-120, 120]).range([0, width]),
                     yScale = d3.scaleLinear().domain([-145, 95]).range([height, 0]);
