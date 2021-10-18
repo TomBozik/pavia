@@ -132,8 +132,8 @@
                 var xScale = d3.scaleLinear().domain([-120, 120]).range([0, width]),
                     yScale = d3.scaleLinear().domain([-145, 95]).range([height, 0]);
                     
-                // var g = svg.append("g")
-                //     .attr("transform", "translate(" + 100 + "," + 100 + ")");
+                var g = svg.append("g")
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")");
                 d3.select('body').append('div').attr('id', 'tooltip').attr('style', 'position: absolute; opacity: 0; color: red; font-weight: bold; background-color: black; padding: 5px 5px 5px 5px; display: none');
 
                 svg.append('g')
