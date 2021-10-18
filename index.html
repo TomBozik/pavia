@@ -28,19 +28,27 @@
             Pavia - CNFT Listings
         </div>
         <div class="flex items-center">
-            <div class="pr-2">
-                Max price:
+            <div class="flex flex-col">
+                <div class="pr-2 text-gray-600  text-sm text-center pb-1">
+                    Price filter
+                </div>
+                <div class="pb-2">
+                    <input type="text" name="minPrice" x-model="minPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-20 mr-1"> 
+                    - 
+                    <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-20 ml-1">
+                </div>
+
+                <button type="submit" @click="loadData()"
+                    class=" bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700"
+                    :class="[ isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700' ]" :disabled="isLoading">
+                    Search
+                </button>
+
             </div>
-            <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-36">
-            <button type="submit" @click="loadData()"
-                class="flex bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 ml-2"
-                :class="[ isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700' ]" :disabled="isLoading">
-                Search
-            </button>
         </div>
         
         <div class="w-full flex justify-center text-gray-600  text-sm">
-            <div class="pr-1">Getting page:</div>
+            <div class="pr-1">Downloading page:</div>
             <div x-text="pageNum"></div>
         </div>
         <svg id="scatterplot" width="1800" height="1800" class="hidden"></svg>
@@ -65,7 +73,8 @@
             error: '',
             all_lands: [],
             pageNum: 0,
-            maxPrice: 400,
+            maxPrice: 350,
+            minPrice: 0,
             async loadData(){
                 this.pageNum = 0;
                 this.isLoading = true;
@@ -79,7 +88,8 @@
                         page: this.pageNum,
                         verified: true,
                         project: "pavia",
-                        pricemax: this.maxPrice
+                        pricemax: this.maxPrice,
+                        pricemin: this.minPrice
                     };
 
                     await axios.post("https://api.cnft.io/market/listings", payload)
@@ -122,8 +132,8 @@
                 var xScale = d3.scaleLinear().domain([-120, 120]).range([0, width]),
                     yScale = d3.scaleLinear().domain([-145, 95]).range([height, 0]);
                     
-                var g = svg.append("g")
-                    .attr("transform", "translate(" + 100 + "," + 100 + ")");
+                // var g = svg.append("g")
+                //     .attr("transform", "translate(" + 100 + "," + 100 + ")");
                 d3.select('body').append('div').attr('id', 'tooltip').attr('style', 'position: absolute; opacity: 0; color: red; font-weight: bold; background-color: black; padding: 5px 5px 5px 5px; display: none');
 
                 svg.append('g')
