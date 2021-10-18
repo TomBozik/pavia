@@ -32,10 +32,14 @@
                 <div class="pr-2 text-gray-600  text-sm text-center pb-1">
                     Price filter
                 </div>
-                <div class="pb-2">
-                    <input type="text" name="minPrice" x-model="minPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-20 mr-1"> 
-                    - 
-                    <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-20 ml-1">
+                <div class="pb-2 flex items-center justify-between">
+                    <input type="text" name="minPrice" x-model="minPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-28 mr-1"> 
+                    <div>-</div>
+                    <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-28 ml-1">
+                </div>
+                <div class="pb-3">
+                    <input type="text" name="walletSearch" x-model="walletSearch"
+                    class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-gray-300  rounded-lg py-2 px-4 appearance-none leading-normal" placeholder="Wallet address">
                 </div>
 
                 <button type="submit" @click="loadData()"
@@ -72,10 +76,13 @@
             isError: false,
             error: '',
             all_lands: [],
+            my: [],
             pageNum: 0,
-            maxPrice: 350,
+            maxPrice: 150,
             minPrice: 0,
+            walletSearch: localStorage.getItem("address") || '',
             async loadData(){
+                localStorage.setItem('address', this.walletSearch);
                 this.pageNum = 0;
                 this.isLoading = true;
                 this.all_lands = [];
@@ -90,6 +97,7 @@
                         project: "pavia",
                         pricemax: this.maxPrice,
                         pricemin: this.minPrice
+                      
                     };
 
                     await axios.post("https://api.cnft.io/market/listings", payload)
@@ -113,6 +121,22 @@
                     this.pageNum += 1;
 
                     if (lands.length == 0){
+                        await axios.get(`https://api.pool.pm/wallet/${this.walletSearch}`)
+                        .then((res) => {
+                            tokens = [...res.data.tokens];
+                            lands = tokens.filter(land => { return land.policy === '4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d' });
+
+                            lands.forEach(land => {
+                                let my_x = land.metadata['-----Land Sale 1-----'][1].x;
+                                let my_y = land.metadata['-----Land Sale 1-----'][2].y;
+                                this.my.push({'x': my_x, 'y': my_y});
+                            });
+                        })
+                        .catch((err) => {
+                            console.log("Error: ", err);
+     
+                        });
+
                         this.isLoading = false;
                         this.plotData();
                         var element = document.getElementById("scatterplot");
@@ -146,6 +170,17 @@
                     .attr("r", 3.5)
                     .attr("transform", "translate(" + 100 + "," + 100 + ")")
                     .style("fill", "#aacff0")
+
+                svg.append('g')
+                    .selectAll("dot")
+                    .data(this.my)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) { return xScale(d.x); } )
+                    .attr("cy", function (d) { return yScale(d.y); } )
+                    .attr("r", 3.5)
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")")
+                    .style("fill", "red")
 
 
                 svg.append('g')
