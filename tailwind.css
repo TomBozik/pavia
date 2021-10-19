@@ -744,9 +744,9 @@ video {
   border-color: rgba(220, 38, 38, var(--tw-border-opacity));
 }
 
-.border-yellow-600 {
+.border-pink-800 {
   --tw-border-opacity: 1;
-  border-color: rgba(217, 119, 6, var(--tw-border-opacity));
+  border-color: rgba(157, 23, 77, var(--tw-border-opacity));
 }
 
 .bg-white {
