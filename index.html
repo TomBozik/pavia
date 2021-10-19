@@ -58,6 +58,10 @@
             <div class="pr-1">Downloading page:</div>
             <div x-text="pageNum"></div>
         </div>
+        <div class="w-full flex justify-center text-gray-600  text-sm">
+            <div x-text="lands_num"></div>
+        </div>
+
     </div>
     <svg id="scatterplot" width="1800" height="1800" class="hidden"></svg>
     <div class="flex flex-col text-center text-xs text-gray-500">
@@ -79,18 +83,20 @@
             isError: false,
             error: '',
             all_lands: [],
+            lands_num: '',
             my: [],
             mySecond: [],
-            pageNum: 0,
+            pageNum: 1,
             maxPrice: 150,
             minPrice: 0,
             walletSearch: localStorage.getItem("address") || '',
             walletSearchSecond: '',
             async loadData(){
                 localStorage.setItem('address', this.walletSearch);
-                this.pageNum = 0;
+                this.pageNum = 1;
                 this.isLoading = true;
                 this.all_lands = [];
+                this.lands_num = '';
                 this.my = [];
                 this.mySecond = [];
                 while(1){
@@ -161,6 +167,7 @@
                         });
 
                         this.isLoading = false;
+                        this.lands_num = this.all_lands.length.toString();
                         this.plotData();
                         var element = document.getElementById("scatterplot");
                         element.classList.remove("hidden");
