@@ -39,7 +39,10 @@
                 </div>
                 <div class="pb-3">
                     <input type="text" name="walletSearch" x-model="walletSearch"
-                    class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-gray-300 w-full rounded-lg py-2 px-4 appearance-none leading-normal" placeholder="Wallet address">
+                    class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-red-600 w-full rounded-lg py-2 px-4 appearance-none leading-normal mb-1" placeholder="Wallet address (optional)">
+
+                    <input type="text" name="walletSearchSecond" x-model="walletSearchSecond"
+                    class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-yellow-600 w-full rounded-lg py-2 px-4 appearance-none leading-normal" placeholder="Wallet address 2 (optional)">
                 </div>
 
                 <button type="submit" @click="loadData()"
@@ -77,15 +80,19 @@
             error: '',
             all_lands: [],
             my: [],
+            mySecond: [],
             pageNum: 0,
             maxPrice: 150,
             minPrice: 0,
             walletSearch: localStorage.getItem("address") || '',
+            walletSearchSecond: '',
             async loadData(){
                 localStorage.setItem('address', this.walletSearch);
                 this.pageNum = 0;
                 this.isLoading = true;
                 this.all_lands = [];
+                this.my = [];
+                this.mySecond = [];
                 while(1){
                     const payload = {
                         search: "",
@@ -137,6 +144,22 @@
      
                         });
 
+                        await axios.get(`https://api.pool.pm/wallet/${this.walletSearchSecond}`)
+                        .then((res) => {
+                            tokens = [...res.data.tokens];
+                            lands = tokens.filter(land => { return land.policy === '4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d' });
+
+                            lands.forEach(land => {
+                                let my_x = land.metadata['-----Land Sale 1-----'][1].x;
+                                let my_y = land.metadata['-----Land Sale 1-----'][2].y;
+                                this.mySecond.push({'x': my_x, 'y': my_y});
+                            });
+                        })
+                        .catch((err) => {
+                            console.log("Error: ", err);
+     
+                        });
+
                         this.isLoading = false;
                         this.plotData();
                         var element = document.getElementById("scatterplot");
@@ -181,6 +204,29 @@
                     .attr("r", 3.5)
                     .attr("transform", "translate(" + 100 + "," + 100 + ")")
                     .style("fill", "red")
+                    .on('mouseover', function(d) {
+                        d3.select('#tooltip').transition().duration(200).style('opacity', 1).style('display', "block").text("x:" + d.x.toString() + " y:" + d.y.toString()); 
+                        d3.select(this).style("cursor", "default"); 
+                    })
+                    .on('mouseout', function() { 
+                        d3.select('#tooltip').style('opacity', 0).style('display', "none"); 
+                        d3.select(this).style("cursor", "default");
+                    })
+                    .on('mousemove', function() {
+                        d3.select('#tooltip').style('left', (d3.event.pageX+10) + 'px').style('top', (d3.event.pageY+10) + 'px'); 
+                        d3.select(this).style("cursor", "default");
+                    });
+
+                svg.append('g')
+                    .selectAll("dot")
+                    .data(this.mySecond)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", function (d) { return xScale(d.x); } )
+                    .attr("cy", function (d) { return yScale(d.y); } )
+                    .attr("r", 3.5)
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")")
+                    .style("fill", "#D97706")
                     .on('mouseover', function(d) {
                         d3.select('#tooltip').transition().duration(200).style('opacity', 1).style('display', "block").text("x:" + d.x.toString() + " y:" + d.y.toString()); 
                         d3.select(this).style("cursor", "default"); 
