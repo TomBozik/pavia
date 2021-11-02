@@ -122,7 +122,7 @@
                                     x: land.asset.metadata['-----Land Sale 1-----'][1].x,
                                     y: land.asset.metadata['-----Land Sale 1-----'][2].y,
                                     'price': land['price'] / 1000000,
-                                    'id': land['id']
+                                    'id': land['_id']
                                 });
                             });
                         }
@@ -265,8 +265,8 @@
                     .data(this.all_lands)
                     .enter()
                     .append("a")
-                    .attr("target","_blank", function(d) { return "https://cnft.io/token.php?id=" + d.id })
-                    .attr("xlink:href", function(d) {return "https://cnft.io/token.php?id=" + d.id})
+                    .attr("target","_blank", function(d) { return "https://cnft.io/token/" + d.id })
+                    .attr("xlink:href", function(d) {return "https://cnft.io/token/" + d.id})
                     .append("circle")
                     .attr("cx", function (d) { return xScale(d.x); } )
                     .attr("cy", function (d) { return yScale(d.y); } )
