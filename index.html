@@ -101,26 +101,26 @@
                 this.mySecond = [];
                 while(1){
                     const payload = {
-                        search: "pavia",
-                        sort: "date",
-                        order: "desc",
-                        count: 200,
+                        nsfw: false,
                         page: this.pageNum,
+                        priceMin: this.minPrice * 1000000,
+                        priceMax: this.maxPrice * 1000000,
+                        project: "Pavia",
+                        search: "",
+                        sold: false,
+                        sort: {_id: -1},
                         verified: true,
-                        project: "",
-                        pricemax: this.maxPrice,
-                        pricemin: this.minPrice
-                      
+                        types: ["auction","offers","listing"]
                     };
 
                     await axios.post("https://api.cnft.io/market/listings", payload)
                     .then((res) => {
-                        lands = [...res.data.assets];
+                        lands = [...res.data.results];
                         if (lands.length != 0){
                             lands.forEach(land => {   
                                 this.all_lands.push({
-                                    x: land.metadata.tags[1]['-----Land Sale 1-----'][1].x,
-                                    y: land.metadata.tags[1]['-----Land Sale 1-----'][2].y,
+                                    x: land.asset.metadata['-----Land Sale 1-----'][1].x,
+                                    y: land.asset.metadata['-----Land Sale 1-----'][2].y,
                                     'price': land['price'] / 1000000,
                                     'id': land['id']
                                 });
