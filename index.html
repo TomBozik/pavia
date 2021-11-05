@@ -37,6 +37,11 @@
                     <div>-</div>
                     <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-28 ml-1">
                 </div>
+                <div class="flex items-center justify-between pb-1">
+                    <div><input type="checkbox" id="listing_checkbox" x-model="listing"><label for="listing_checkbox"> Normal</label></div>
+                    <div><input type="checkbox" id="offers_checkbox" x-model="offers"><label for="offers_checkbox"> Offer</label></div>
+                    <div><input type="checkbox" id="auction_checkbox" x-model="auction"><label for="auction_checkbox"> Auction</label></div>
+                </div>
                 <div class="pb-3">
                     <input type="text" name="walletSearch" x-model="walletSearch"
                     class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-red-600 w-full rounded-lg py-2 px-4 appearance-none leading-normal mb-1" placeholder="Wallet address (optional)">
@@ -91,6 +96,10 @@
             minPrice: 1,
             walletSearch: localStorage.getItem("address") || '',
             walletSearchSecond: '',
+
+            auction: true,
+            offers: true,
+            listing: true,
             async loadData(){
                 localStorage.setItem('address', this.walletSearch);
                 this.pageNum = 1;
@@ -99,6 +108,19 @@
                 this.lands_num = '';
                 this.my = [];
                 this.mySecond = [];
+
+                this.types = [];
+
+                if(this.auction == true){
+                    this.types.push("auction");
+                }
+                if(this.offers == true){
+                    this.types.push("offers");
+                }
+                if(this.listing == true){
+                    this.types.push("listing");
+                }
+
                 while(1){
                     const payload = {
                         nsfw: false,
@@ -110,7 +132,7 @@
                         sold: false,
                         sort: {_id: -1},
                         verified: true,
-                        types: ["auction","offers","listing"]
+                        types: this.types
                     };
 
                     await axios.post("https://api.cnft.io/market/listings", payload)
