@@ -830,6 +830,10 @@ video {
   line-height: 1.5;
 }
 
+.tracking-tight {
+  letter-spacing: -0.025em;
+}
+
 .text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity));
@@ -853,6 +857,10 @@ video {
 .hover\:text-pink-600:hover {
   --tw-text-opacity: 1;
   color: rgba(219, 39, 119, var(--tw-text-opacity));
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 .opacity-50 {
@@ -905,8 +913,8 @@ video {
 }
 
 @media (min-width: 1024px) {
-  .lg\:p-8 {
-    padding: 2rem;
+  .lg\:p-4 {
+    padding: 1rem;
   }
 }
 
