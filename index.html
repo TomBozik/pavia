@@ -23,7 +23,14 @@
 </head>
 
 <body class="h-full min-h-screen bg-gray-200 flex flex-col" x-data="alpineInstance()">
-    <div class="w-full text-center text-sm tracking-tight text-gray-600 underline"><a href="https://pavia.3dkiwi.io/" target="_blank">Sold / Heatmap </a> </div>
+    <div class="flex justify-center pt-2">
+        <div class="flex items-center justify-center">
+            <figure class="relative max-w-xs cursor-pointer">
+                <a href="https://pavia.3dkiwi.io/" target="_blank"><img class="object-top object-cover h-16 w-52 rounded-lg" src="heatmap.png"></a>
+                <figcaption class="absolute text-lg -mt-12 text-white px-16"><div><a href="https://pavia.3dkiwi.io/" target="_blank" class="text-gray-700 font-semibold text-md tracking-wide">Heatmap</a></div></figcatpion>
+            </figure>
+          </div>
+    </div>
     <div class="h-full text-gray-800 p-4 lg:p-4 flex-1 flex flex-col items-center">
         <div class="w-full flex justify-center pb-2 text-lg font-semibold">
             Pavia - CNFT Listings
@@ -93,7 +100,7 @@
             my: [],
             mySecond: [],
             pageNum: 1,
-            maxPrice: 300,
+            maxPrice: 350,
             minPrice: 1,
             walletSearch: localStorage.getItem("address") || '',
             walletSearchSecond: '',
