@@ -230,7 +230,7 @@
                     .attr("cy", function (d) { return yScale(d.y); } )
                     .attr("r", 3.5)
                     .attr("transform", "translate(" + 100 + "," + 100 + ")")
-                    .style("fill", "#55A1B6")
+                    .style("fill", "#7ebbcc")
 
                 // deep sea
                 svg.append('g')
@@ -390,7 +390,7 @@
                     .attr("cy", function (d) { return yScale(d.y); } )
                     .attr("r", 3.5)
                     .attr("transform", "translate(" + 100 + "," + 100 + ")")
-                    .style("fill", "#56B555")
+                    .style("fill", "#329431")
                     .on('mouseover', function(d) {
                         d3.select('#tooltip').transition().duration(200).style('opacity', 1).style('display', "block").text("x:" + d.x.toString() + " y:" + d.y.toString() + " price:" + d.price.toString()); 
                         d3.select(this).style("cursor", "default"); 
