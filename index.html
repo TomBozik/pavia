@@ -328,6 +328,33 @@
                     .attr("transform", "translate(" + 100 + "," + 100 + ")")
                     .style("fill", "#0E303A")
 
+                // land for sale
+                svg.append('g')
+                    .selectAll("dot")
+                    .data(this.all_lands)
+                    .enter()
+                    .append("a")
+                    .attr("target","_blank", function(d) { return "https://cnft.io/token/" + d.id })
+                    .attr("xlink:href", function(d) {return "https://cnft.io/token/" + d.id})
+                    .append("circle")
+                    .attr("cx", function (d) { return xScale(d.x); } )
+                    .attr("cy", function (d) { return yScale(d.y); } )
+                    .attr("r", 3.3)
+                    .attr("transform", "translate(" + 100 + "," + 100 + ")")
+                    .style("fill", "#329431")
+                    .on('mouseover', function(d) {
+                        d3.select('#tooltip').transition().duration(200).style('opacity', 1).style('display', "block").text("x:" + d.x.toString() + " y:" + d.y.toString() + " price:" + d.price.toString()); 
+                        d3.select(this).style("cursor", "default"); 
+                    })
+                    .on('mouseout', function() { 
+                        d3.select('#tooltip').style('opacity', 0).style('display', "none"); 
+                        d3.select(this).style("cursor", "default");
+                    })
+                    .on('mousemove', function() {
+                        d3.select('#tooltip').style('left', (d3.event.pageX+10) + 'px').style('top', (d3.event.pageY+10) + 'px'); 
+                        d3.select(this).style("cursor", "default");
+                    });
+
                 // my
                 svg.append('g')
                     .selectAll("dot")
@@ -376,33 +403,6 @@
                         d3.select(this).style("cursor", "default");
                     });
 
-
-                // land for sale
-                svg.append('g')
-                    .selectAll("dot")
-                    .data(this.all_lands)
-                    .enter()
-                    .append("a")
-                    .attr("target","_blank", function(d) { return "https://cnft.io/token/" + d.id })
-                    .attr("xlink:href", function(d) {return "https://cnft.io/token/" + d.id})
-                    .append("circle")
-                    .attr("cx", function (d) { return xScale(d.x); } )
-                    .attr("cy", function (d) { return yScale(d.y); } )
-                    .attr("r", 3.3)
-                    .attr("transform", "translate(" + 100 + "," + 100 + ")")
-                    .style("fill", "#329431")
-                    .on('mouseover', function(d) {
-                        d3.select('#tooltip').transition().duration(200).style('opacity', 1).style('display', "block").text("x:" + d.x.toString() + " y:" + d.y.toString() + " price:" + d.price.toString()); 
-                        d3.select(this).style("cursor", "default"); 
-                    })
-                    .on('mouseout', function() { 
-                        d3.select('#tooltip').style('opacity', 0).style('display', "none"); 
-                        d3.select(this).style("cursor", "default");
-                    })
-                    .on('mousemove', function() {
-                        d3.select('#tooltip').style('left', (d3.event.pageX+10) + 'px').style('top', (d3.event.pageY+10) + 'px'); 
-                        d3.select(this).style("cursor", "default");
-                    });
 
             },
 
