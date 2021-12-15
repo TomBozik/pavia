@@ -50,6 +50,9 @@
                     <div><input type="checkbox" id="offers_checkbox" x-model="offers"><label for="offers_checkbox"> Offer</label></div>
                     <div><input type="checkbox" id="auction_checkbox" x-model="auction"><label for="auction_checkbox"> Auction</label></div>
                 </div>
+                <div class="flex items-center justify-between pb-1">
+                    <div><input type="checkbox" id="smart_checkbox" x-model="smartContract"><label for="smart_checkbox"> Smart Contracts</label></div>
+                </div>
                 <div class="pb-3">
                     <input type="text" name="walletSearch" x-model="walletSearch"
                     class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-red-600 w-full rounded-lg py-2 px-4 appearance-none leading-normal mb-1" placeholder="Wallet address (optional)">
@@ -105,6 +108,7 @@
             walletSearch: localStorage.getItem("address") || '',
             walletSearchSecond: '',
 
+            smartContract: false,
             auction: false,
             offers: true,
             listing: true,
@@ -140,6 +144,7 @@
                         sold: false,
                         sort: {_id: -1},
                         verified: true,
+                        smartContract: this.smartContract,
                         types: this.types
                     };
 
