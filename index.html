@@ -152,10 +152,10 @@
                     .then((res) => {
                         lands = [...res.data.results];
                         if (lands.length != 0){
-                            lands.forEach(land => {   
+                            lands.forEach(land => {
                                 this.all_lands.push({
-                                    x: land.asset.metadata['-----Land Sale 1-----'][1].x,
-                                    y: land.asset.metadata['-----Land Sale 1-----'][2].y,
+                                    x: land.assets[0].metadata['-----Land Sale 1-----'][1].x,
+                                    y: land.assets[0].metadata['-----Land Sale 1-----'][2].y,
                                     'price': land['price'] / 1000000,
                                     'id': land['_id']
                                 });
