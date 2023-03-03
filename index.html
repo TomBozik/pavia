@@ -15,50 +15,23 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pavia - CNFT Listings</title>
+    <title>Pavia - jpg.store Listings</title>
     <link rel="stylesheet" href="tailwind.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js" integrity="sha512-lTLt+W7MrmDfKam+r3D2LURu0F47a3QaW5nF0c6Hl0JDZ57ruei+ovbg7BrZ+0bjVJ5YgzsAWE+RreERbpPE1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
-<body class="h-full min-h-screen bg-gray-200 flex flex-col" x-data="alpineInstance()" x-init="window.location.replace('https://pavia.3dkiwi.io/marketmap')">
-    <div class="flex justify-center pt-2">
-        <div class="flex items-center justify-center">
-            <figure class="relative max-w-xs cursor-pointer">
-                <a href="https://pavia.3dkiwi.io/" target="_blank"><img class="object-top object-cover h-16 w-52 rounded-lg" src="heatmap.png"></a>
-                <figcaption class="absolute text-lg -mt-12 text-white px-16"><div><a href="https://pavia.3dkiwi.io/" target="_blank" class="text-gray-700 font-semibold text-md tracking-wide">Heatmap</a></div></figcatpion>
-            </figure>
-          </div>
-    </div>
+<body class="h-full min-h-screen bg-gray-200 flex flex-col" x-data="alpineInstance()">
     <div class="h-full text-gray-800 p-4 lg:p-4 flex-1 flex flex-col items-center">
         <div class="w-full flex justify-center pb-2 text-lg font-semibold">
-            Pavia - CNFT Listings
+            Pavia - NO Bundles
         </div>
         <div class="flex items-center">
             <div class="flex flex-col">
-                <div class="pr-2 text-gray-600  text-sm text-center pb-1">
-                    Price filter
-                </div>
-                <div class="pb-2 flex items-center justify-between">
-                    <input type="text" name="minPrice" x-model="minPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-28 mr-1"> 
-                    <div>-</div>
-                    <input type="text" name="maxPrice" x-model="maxPrice" class="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 appearance-none leading-normal w-28 ml-1">
-                </div>
-                <div class="flex items-center justify-between pb-1">
-                    <div><input type="checkbox" id="listing_checkbox" x-model="listing"><label for="listing_checkbox"> Normal</label></div>
-                    <div><input type="checkbox" id="offers_checkbox" x-model="offers"><label for="offers_checkbox"> Offer</label></div>
-                    <div><input type="checkbox" id="auction_checkbox" x-model="auction"><label for="auction_checkbox"> Auction</label></div>
-                </div>
-                <div class="flex items-center justify-between pb-1">
-                    <div><input type="checkbox" id="smart_checkbox" x-model="smartContract"><label for="smart_checkbox"> Smart Contracts</label></div>
-                </div>
                 <div class="pb-3">
                     <input type="text" name="walletSearch" x-model="walletSearch"
                     class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-red-600 w-full rounded-lg py-2 px-4 appearance-none leading-normal mb-1" placeholder="Wallet address (optional)">
-
-                    <input type="text" name="walletSearchSecond" x-model="walletSearchSecond"
-                    class="flex bg-white dark:bg-dark focus:outline-none focus:shadow-outline border border-pink-800 w-full rounded-lg py-2 px-4 appearance-none leading-normal" placeholder="Wallet address 2 (optional)">
                 </div>
 
                 <button type="submit" @click="loadData()"
@@ -71,22 +44,22 @@
         </div>
         
         <div class="w-full flex justify-center text-gray-600  text-sm">
-            <div class="pr-1">Downloading page:</div>
-            <div x-text="pageNum"></div>
+            <div x-show="isLoading" class="pr-1">Downloading page:</div>
+            <div x-show="isLoading" x-text="pageNum"></div>
         </div>
         <div class="w-full flex justify-center text-gray-600  text-sm">
-            <div x-text="lands_num"></div>
+            
+        </div>
+        <div>
+            <div x-show="isError">
+                <div x-text="error" class="text-gray-600  text-sm"></div>
+            </div>
         </div>
 
     </div>
     <svg id="scatterplot" width="2191" height="1162" class="hidden"></svg>
     <div class="flex flex-col text-center text-xs text-gray-500">
-        <div>
-            <a href="https://twitter.com/Tom_Bozik" class="hover:text-pink-600" target="_blank">@Tom_Bozik</a>
-        </div>
-        <div class="break-all ...">
-            addr1q85g3d9fellqhrvq7rztgvselz4gysnpktnhtueekvp0et55n3el3t9yu58dl9237pkg7el70hrrg4807drg0r7tg33q8qr2kk
-        </div>
+        <div>Tombo</div>
     </div>
 </body>
 
@@ -101,17 +74,9 @@
             all_lands: [],
             lands_num: '',
             my: [],
-            mySecond: [],
             pageNum: 1,
-            maxPrice: 1000,
-            minPrice: 1,
             walletSearch: localStorage.getItem("address") || '',
-            walletSearchSecond: '',
 
-            smartContract: false,
-            auction: false,
-            offers: true,
-            listing: true,
             async loadData(){
                 localStorage.setItem('address', this.walletSearch);
                 this.pageNum = 1;
@@ -120,122 +85,71 @@
                 this.lands_num = '';
                 this.my = [];
                 this.mySecond = [];
-
-                this.types = [];
-
-                if(this.auction == true){
-                    this.types.push("auction");
-                }
-                if(this.offers == true){
-                    this.types.push("offer");
-                }
-                if(this.listing == true){
-                    this.types.push("listing");
-                }
+                this.actualBatchLength = 0;
 
                 while(1){
-                    const payload = {
-                        nsfw: false,
-                        page: this.pageNum,
-                        priceMin: this.minPrice * 1000000,
-                        priceMax: (parseInt(this.maxPrice) + 1) * 1000000,
-                        project: "Pavia",
-                        search: "",
-                        sold: false,
-                        sort: {_id: -1},
-                        verified: true,
-                        smartContract: this.smartContract,
-                        types: this.types
-                    };
+                    try {
+                        const response = await axios.get(`https://server.jpgstoreapis.com/policy/4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d/listings?page=${this.pageNum}`)
+                        
+                        let lands = [...response.data];
+                        if(lands.length == 0) break;
+            
+                        lands.forEach(land => {
+                            if(land['listing_type'] === 'SINGLE_ASSET'){
+                                let reversed_name = land['display_name'].split(' ').reverse()
+                                this.all_lands.push({
+                                    x: reversed_name[1],
+                                    y: reversed_name[0],
+                                    'price': land['price_lovelace'] / 1000000,
+                                    'id': land['asset_id']
+                                });
 
-                    await axios.post("https://api.cnft.io/market/listings", payload)
-                    .then((res) => {
-                        lands = [...res.data.results];
-                        if (lands.length != 0){
-                            lands.forEach(land => {
-                                if ('-----Land Sale 3-----' in land.assets[0].metadata){
-                                    this.all_lands.push({
-                                        x: land.assets[0].metadata['-----Land Sale 3-----'][1].x,
-                                        y: land.assets[0].metadata['-----Land Sale 3-----'][2].y,
-                                        'price': land['price'] / 1000000,
-                                        'id': land['_id']
-                                    });
-                                }
-                                else if ('-----Land Sale 1-----' in land.assets[0].metadata){
-                                    this.all_lands.push({
-                                        x: land.assets[0].metadata['-----Land Sale 1-----'][1].x,
-                                        y: land.assets[0].metadata['-----Land Sale 1-----'][2].y,
-                                        'price': land['price'] / 1000000,
-                                        'id': land['_id']
-                                    });
-                                } else {
-                                    console.log(land);
-                                }
-                            });
-                        }
-                    })
-                    .catch((err) => {
-                        console.log("Error Page: ", this.pageNum, " Error: ", err);
+                            }
+                        });
+
+                        this.pageNum += 1;
+                    
+                    } catch (err) {
                         this.isError = true;
-                    });
-                    this.pageNum += 1;
-
-                    if (lands.length == 0){
-                        await axios.get(`https://pool.pm/wallet/${this.walletSearch}`, {timeout: 10000})
-                        .then((res) => {
-                            tokens = [...res.data.tokens];
-                            lands = tokens.filter(land => { return land.policy === '4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d' });
-
-                            lands.forEach(land => {
-                                if ('-----Land Sale 3-----' in land.metadata){
-                                    let my_x = land.metadata['-----Land Sale 3-----'][1].x;
-                                    let my_y = land.metadata['-----Land Sale 3-----'][2].y;
-                                    this.my.push({x: my_x, y: my_y});
-                                }
-                                else {
-                                    let my_x = land.metadata['-----Land Sale 1-----'][1].x;
-                                    let my_y = land.metadata['-----Land Sale 1-----'][2].y;
-                                    this.my.push({x: my_x, y: my_y});
-                                }
-                            });
-                        })
-                        .catch((err) => {
-                            console.log("Error: ", err);
-     
-                        });
-
-                        await axios.get(`https://pool.pm/wallet/${this.walletSearchSecond}`, {timeout: 10000})
-                        .then((res) => {
-                            tokens = [...res.data.tokens];
-                            lands = tokens.filter(land => { return land.policy === '4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d' });
-
-                            lands.forEach(land => {
-                                if ('-----Land Sale 3-----' in land.metadata){
-                                    let my_x = land.metadata['-----Land Sale 3-----'][1].x;
-                                    let my_y = land.metadata['-----Land Sale 3-----'][2].y;
-                                    this.mySecond.push({x: my_x, y: my_y});
-                                }
-                                else {
-                                    let my_x = land.metadata['-----Land Sale 1-----'][1].x;
-                                    let my_y = land.metadata['-----Land Sale 1-----'][2].y;
-                                    this.mySecond.push({x: my_x, y: my_y});
-
-                                }
-                            });
-                        })
-                        .catch((err) => {
-                            console.log("Error: ", err);
-     
-                        });
-
-                        this.isLoading = false;
-                        this.lands_num = this.all_lands.length.toString();
-                        this.plotData();
-                        var element = document.getElementById("scatterplot");
-                        element.classList.remove("hidden");
+                        // this.error = err;
+                        // console.log(err);
+                        this.error = 'Jpg.store -> Too many requests. Try again in 1-2 minutes';
                         break;
                     }
                 }
+
+                if (this.walletSearch != ''){        
+                    await axios.get(`https://pool.pm/wallet/${this.walletSearch}`, {timeout: 10000})
+                    .then((res) => {
+                        tokens = [...res.data.tokens];
+                        lands = tokens.filter(land => { return land.policy === '4bf184e01e0f163296ab253edd60774e2d34367d0e7b6cbc689b567d' });
+
+                        lands.forEach(land => {
+                            if ('-----Land Sale 3-----' in land.metadata){
+                                let my_x = land.metadata['-----Land Sale 3-----'][1].x;
+                                let my_y = land.metadata['-----Land Sale 3-----'][2].y;
+                                this.my.push({x: my_x, y: my_y});
+                            }
+                            else {
+                                let my_x = land.metadata['-----Land Sale 1-----'][1].x;
+                                let my_y = land.metadata['-----Land Sale 1-----'][2].y;
+                                this.my.push({x: my_x, y: my_y});
+                            }
+                        });
+                    })
+                    .catch((err) => {
+                        console.log("Error: ", err);
+                        this.isError = true;
+                        this.error = 'QQ';
+                    });
+                }
+
+                this.isLoading = false;
+                this.lands_num = this.all_lands.length.toString();
+                this.plotData();
+                var element = document.getElementById("scatterplot");
+                element.classList.remove("hidden");
+
             },
             plotData(){
                 var svg = d3.select("svg"),
@@ -378,8 +292,8 @@
                     .data(this.all_lands)
                     .enter()
                     .append("a")
-                    .attr("target","_blank", function(d) { return "https://cnft.io/token/" + d.id })
-                    .attr("xlink:href", function(d) {return "https://cnft.io/token/" + d.id})
+                    .attr("target","_blank", function(d) { return "https://www.jpg.store/asset/" + d.id })
+                    .attr("xlink:href", function(d) {return "https://www.jpg.store/asset/" + d.id})
                     .append("circle")
                     .attr("cx", function (d) { return xScale(d.x); } )
                     .attr("cy", function (d) { return yScale(d.y); } )
