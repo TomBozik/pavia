@@ -103,17 +103,18 @@
                                     'price': land['price_lovelace'] / 1000000,
                                     'id': land['asset_id']
                                 });
-
                             }
                         });
 
                         this.pageNum += 1;
+
+                        await new Promise(resolve => setTimeout(resolve, 2000));
                     
                     } catch (err) {
                         this.isError = true;
                         // this.error = err;
                         // console.log(err);
-                        this.error = 'Jpg.store -> Too many requests. Try again in 5-10 minutes';
+                        this.error = 'Jpg.store -> Too many requests. Try again in 1 hour :(';
                         break;
                     }
                 }
